@@ -717,27 +717,27 @@ class Slapp extends EventEmitter {
       // expected to happen. Best way to handle this uncertainty is to loop until we find a match and then stop
       if(msg.body.actions) {
          for (let i = 0; i < msg.body.actions.length; i++) {
-         let action = msg.body.actions[i]
-         if (actionNameCriteria.test(action.name)) {
-            // test for menu options. There could be multiple options returned so attempt to match
-            // on any of them and if any one matches, we'll consider this a match.
-            if (Array.isArray(action.selected_options)) {
-               if (action.selected_options.find(option => actionValueCriteria.test(option.value))) {
-               callback(msg, action.selected_options.map(it => it.value))
-               return true
+            let action = msg.body.actions[i]
+            if (actionNameCriteria.test(action.name)) {
+               // test for menu options. There could be multiple options returned so attempt to match
+               // on any of them and if any one matches, we'll consider this a match.
+               if (Array.isArray(action.selected_options)) {
+                  if (action.selected_options.find(option => actionValueCriteria.test(option.value))) {
+                  callback(msg, action.selected_options.map(it => it.value))
+                  return true
+                  }
+               }
+               // test for message actions
+               if (actionValueCriteria.test(action.value)) {
+                  callback(msg, action.value)
+                  return true
                }
             }
-            // test for message actions
-            if (actionValueCriteria.test(action.value)) {
-               callback(msg, action.value)
-               return true
-            }
-         }
          }
       } else {
          callback(msg, msg.body)
          return true
-     }
+      }
     }
 
     return this.match(fn)
